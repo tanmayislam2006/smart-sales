@@ -26,7 +26,6 @@ export class AuthGuard implements CanActivate {
 
       return true;
     } catch (error: any) {
-      console.log(error);
       throw new UnauthorizedException('Invalid or expired token');
     }
   }

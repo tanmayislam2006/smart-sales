@@ -1,6 +1,6 @@
 import { Body, Controller, Post, Res } from '@nestjs/common';
 import { UserService } from './user.service';
-import { User } from 'generated/prisma/client';
+import { User } from '../../generated/prisma/client';
 import { Response } from 'express';
 
 @Controller('user')

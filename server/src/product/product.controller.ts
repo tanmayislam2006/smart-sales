@@ -1,6 +1,6 @@
 import { Controller, Get, UseGuards } from '@nestjs/common';
 import { ProductService } from './product.service';
-import { AuthGuard } from 'src/common/auth.guard';
+import { AuthGuard } from '../common/auth.guard';
 
 @Controller('product')
 export class ProductController {
