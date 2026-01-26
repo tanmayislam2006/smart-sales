@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   Patch,
@@ -48,6 +49,17 @@ export class ProductController {
     return {
       success: true,
       message: 'Product updated successfully',
+      data: res,
+    };
+  }
+
+  @UseGuards(AuthGuard)
+  @Delete('/:id')
+  async deleteProduct(@Param('id') id: string) {
+    const res = await this.productService.deleteProduct(id);
+    return {
+      success: true,
+      message: 'Product deleted successfully',
       data: res,
     };
   }

@@ -15,7 +15,6 @@ export class UserController {
     @Body() body: User,
     @Res({ passthrough: true }) res: Response,
   ) {
-    console.log(body);
     const token = await this.userService.logInUser(body.email, body.password);
     res.cookie('accessToken', token, {
       httpOnly: true,
