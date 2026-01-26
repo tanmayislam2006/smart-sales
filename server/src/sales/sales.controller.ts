@@ -6,9 +6,17 @@ import { CreateSalesDto } from './dto/createSales.dto';
 @Controller('sales')
 export class SalesController {
   constructor(private readonly salesService: SalesService) {}
+
+  @UseGuards(AuthGuard)
   @Get()
-  getSales() {
-    return 'Sales data';
+  async getSales(@Req() req) {
+    const user = req.user;
+    const res = await this.salesService.getSales(user.userId);
+    return {
+      success: true,
+      message: 'Sales retrieved successfully',
+      data: res,
+    };
   }
   @UseGuards(AuthGuard)
   @Post()

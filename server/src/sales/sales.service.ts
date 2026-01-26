@@ -7,6 +7,11 @@ import { prisma } from 'src/libs/prisma';
 
 @Injectable()
 export class SalesService {
+  async getSales(userID: string) {
+    return await prisma.sales.findMany({
+      where: { userID },
+    });
+  }
   async createSales(payload: {
     productID: string;
     userID: string;
