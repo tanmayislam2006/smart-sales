@@ -1,4 +1,12 @@
-import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Patch,
+  Post,
+  UseGuards,
+} from '@nestjs/common';
 import { ProductService } from './product.service';
 import { AuthGuard } from '../common/auth.guard';
 
@@ -16,6 +24,7 @@ export class ProductController {
       data: res,
     };
   }
+
   @UseGuards(AuthGuard)
   @Post()
   async uploadProduct(
@@ -25,6 +34,20 @@ export class ProductController {
     return {
       success: true,
       message: 'Product uploaded successfully',
+      data: res,
+    };
+  }
+
+  @UseGuards(AuthGuard)
+  @Patch('/:id')
+  async updateProduct(
+    @Param('id') id: string,
+    @Body() data: Omit<any, 'id' | 'createdAt' | 'updatedAt'>,
+  ) {
+    const res = await this.productService.updateProduct(id, data);
+    return {
+      success: true,
+      message: 'Product updated successfully',
       data: res,
     };
   }

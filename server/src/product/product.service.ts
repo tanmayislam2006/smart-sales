@@ -14,4 +14,15 @@ export class ProductService {
 
     return result;
   }
+  async updateProduct(
+    id: string,
+    data: Omit<Product, 'id' | 'createdAt' | 'updatedAt'>,
+  ) {
+    const result = await prisma.product.update({
+      where: { id },
+      data,
+    });
+
+    return result;
+  }
 }
