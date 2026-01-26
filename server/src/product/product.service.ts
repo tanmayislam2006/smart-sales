@@ -28,19 +28,16 @@ export class ProductService {
     return result;
   }
   async deleteProduct(id: string) {
-    console.log(id);
-    const isExist = await prisma.product.findUnique({
+    const product = await prisma.product.findUnique({
       where: { id },
     });
 
-    if (!isExist) {
+    if (!product) {
       throw new NotFoundException('Product not found');
     }
 
-    const result = await prisma.product.delete({
+    return prisma.product.delete({
       where: { id },
     });
-
-    return result;
   }
 }
