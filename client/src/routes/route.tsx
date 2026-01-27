@@ -1,43 +1,37 @@
 import { createBrowserRouter } from "react-router";
-import { LoginForm } from "@/components/Layout/auth/login-form";
+
 import PrivateRoute from "./PrivateRoute";
 import Dashboard from "@/components/Layout/dashboard/Dashboard";
 import Product from "@/page/Product";
 import Sales from "@/page/Sales";
 import MySales from "@/page/MySales";
+import { LoginForm } from "@/components/Layout/auth/login-form";
 
 const router = createBrowserRouter([
   {
     path: "/",
-    element: (
-      <PrivateRoute>
-        <Dashboard />
-      </PrivateRoute>
-    ),
+    element: <PrivateRoute />,
     children: [
       {
-        path: "/product",
-        element: (
-          <PrivateRoute>
-            <Product />
-          </PrivateRoute>
-        ),
-      },
-      {
-        path: "/my-sales",
-        element: (
-          <PrivateRoute>
-            <MySales />
-          </PrivateRoute>
-        ),
-      },
-      {
-        path: "/sales",
-        element: (
-          <PrivateRoute>
-            <Sales />
-          </PrivateRoute>
-        ),
+        element: <Dashboard />, 
+        children: [
+          {
+            index: true,
+            element: <Product />,
+          },
+          {
+            path: "product",
+            element: <Product />,
+          },
+          {
+            path: "sales",
+            element: <Sales />,
+          },
+          {
+            path: "my-sales",
+            element: <MySales />,
+          },
+        ],
       },
     ],
   },
