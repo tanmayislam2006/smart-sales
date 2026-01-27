@@ -1,5 +1,6 @@
 import useAxiosSecure from "@/Hooks/useAxiosSecure";
 import { createContext, useContext, useEffect, useState } from "react";
+import toast from "react-hot-toast";
 
 type User = {
   id: string;
@@ -34,7 +35,10 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   };
 
   const logout = async () => {
-    await axiosSecure.post("/user/logout");
+    const res = await axiosSecure.post("/user/logout");
+    if (res.data.success) {
+      toast.success("Log Out Success");
+    }
     setUser(null);
   };
 
@@ -56,7 +60,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     </AuthContext.Provider>
   );
 };
-
+// ! create hoock to make acces all easy
 export const useAuth = () => {
   const ctx = useContext(AuthContext);
   if (!ctx) throw new Error("useAuth must be used within AuthProvider");

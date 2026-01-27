@@ -80,6 +80,7 @@ export function LoginForm({
                   id="email"
                   type="email"
                   placeholder="m@example.com"
+                  defaultValue={"admin@gmail.com"}
                   {...register("email")}
                 />
                 {errors.email && (
