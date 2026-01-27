@@ -4,8 +4,6 @@ import { Navigate, Outlet } from "react-router";
 
 const PrivateRoute = () => {
   const { isAuthenticated, loading } = useAuth();
-  console.log(isAuthenticated);
-
   if (loading) {
     return <div className="p-6">Checking authentication...</div>;
   }

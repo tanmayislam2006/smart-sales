@@ -17,9 +17,9 @@ import { Input } from "@/components/ui/input";
 import toast from "react-hot-toast";
 import useAxios from "@/Hooks/useAxios";
 import { useForm } from "react-hook-form";
-import { negative, z } from "zod";
+import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Navigate, useNavigation } from "react-router";
+import { Navigate } from "react-router";
 
 const loginSchema = z.object({
   email: z.string().email("Invalid email address"),
