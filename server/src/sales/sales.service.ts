@@ -10,6 +10,13 @@ export class SalesService {
   async getSales(userID: string) {
     return await prisma.sales.findMany({
       where: { userID },
+      include: {
+        product: {
+          select: {
+            name: true,
+          },
+        },
+      },
     });
   }
   async createSales(payload: {

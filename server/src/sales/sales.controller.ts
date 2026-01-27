@@ -26,7 +26,6 @@ export class SalesController {
     @Req() req,
   ) {
     const user = req.user;
-
     const res = await this.salesService.createSales({
       productID: data.productID,
       userID: user.userId,

@@ -26,6 +26,11 @@ const MySales = () => {
       cell: ({ row }) => <span>{row.original.productID}</span>,
     },
     {
+      accessorKey: "product",
+      header: "Product",
+      cell: ({ row }) => <span>{row.original.product.name}</span>,
+    },
+    {
       accessorKey: "userID",
       header: "User ID",
       cell: ({ row }) => <span>{row.original.userID}</span>,
@@ -41,7 +46,7 @@ const MySales = () => {
       cell: ({ row }) => <span>{row.original.total}</span>,
     },
   ];
-  
+
   return (
     <div className="container mx-auto mt-10">
       <DataTable columns={columns} data={data} />
