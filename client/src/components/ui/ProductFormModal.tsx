@@ -6,6 +6,7 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { productSchema } from "@/schema/product.schema";
@@ -33,8 +34,26 @@ const ProductFormModal = ({ open, onClose, defaultValues }: Props) => {
     reset,
   } = useForm<ProductFormValues>({
     resolver: zodResolver(productSchema),
-    defaultValues,
+    defaultValues: {
+      name: "",
+      sku: "",
+      price: 0,
+      stockQuantity: 0,
+    },
   });
+
+  useEffect(() => {
+    if (defaultValues) {
+      reset(defaultValues);
+    } else {
+      reset({
+        name: "",
+        sku: "",
+        price: 0,
+        stockQuantity: 0,
+      });
+    }
+  }, [defaultValues, reset]);
 
   const { mutate } = useMutation({
     mutationFn: async (data: ProductFormValues) => {
@@ -62,24 +81,18 @@ const ProductFormModal = ({ open, onClose, defaultValues }: Props) => {
     <Dialog open={open} onOpenChange={onClose}>
       <DialogContent className="max-w-md">
         <DialogHeader>
-          <DialogTitle>{isEdit ? "Update Product" : "Add Product"}</DialogTitle>
+          <DialogTitle>
+            {isEdit ? "Update Product" : "Add Product"}
+          </DialogTitle>
         </DialogHeader>
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-          <Input
-            defaultValue={defaultValues?.name}
-            placeholder="Product Name"
-            {...register("name")}
-          />
+          <Input placeholder="Product Name" {...register("name")} />
           {errors.name && (
             <p className="text-sm text-red-500">{errors.name.message}</p>
           )}
 
-          <Input
-            placeholder="SKU"
-            defaultValue={defaultValues?.sku}
-            {...register("sku")}
-          />
+          <Input placeholder="SKU" {...register("sku")} />
           {errors.sku && (
             <p className="text-sm text-red-500">{errors.sku.message}</p>
           )}
@@ -88,7 +101,6 @@ const ProductFormModal = ({ open, onClose, defaultValues }: Props) => {
             type="number"
             step="0.01"
             placeholder="Price"
-            defaultValue={defaultValues?.price}
             {...register("price", { valueAsNumber: true })}
           />
           {errors.price && (
@@ -97,7 +109,6 @@ const ProductFormModal = ({ open, onClose, defaultValues }: Props) => {
 
           <Input
             type="number"
-            defaultValue={defaultValues?.stockQuantity}
             placeholder="Stock Quantity"
             {...register("stockQuantity", { valueAsNumber: true })}
           />
