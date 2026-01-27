@@ -9,7 +9,6 @@ const useAxiosSecure = () => {
       withCredentials: true,
     });
   }, []);
-
   useEffect(() => {
     const requestInterceptor = axiosSecure.interceptors.request.use(
       (config) => {
