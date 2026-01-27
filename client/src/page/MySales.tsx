@@ -41,7 +41,7 @@ const MySales = () => {
       cell: ({ row }) => <span>{row.original.total}</span>,
     },
   ];
-  console.log(data);
+  
   return (
     <div className="container mx-auto mt-10">
       <DataTable columns={columns} data={data} />
