@@ -1,7 +1,16 @@
-import { Body, Controller, Post, Res } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Post,
+  Req,
+  Res,
+  UseGuards,
+} from '@nestjs/common';
 import { UserService } from './user.service';
 import { User } from 'generated/prisma/client';
 import { Response } from 'express';
+import { AuthGuard } from 'src/common/auth.guard';
 
 @Controller('user')
 export class UserController {
@@ -10,6 +19,7 @@ export class UserController {
   registerUser(@Body() body: User) {
     return this.userService.registerUser(body.email, body.password);
   }
+
   @Post('login')
   async logInUser(
     @Body() body: User,
@@ -22,6 +32,27 @@ export class UserController {
       sameSite: 'lax',
       maxAge: 24 * 60 * 60 * 1000,
     });
-    return { message: 'Login successful' };
+    return {
+      success: true,
+      message: 'Log in Success',
+    };
+  }
+
+  @Post('logout')
+  logout(@Res({ passthrough: true }) res: Response) {
+    res.clearCookie('accessToken');
+    return {
+      success: true,
+      message: 'Log Out Success',
+    };
+  }
+
+  @UseGuards(AuthGuard)
+  @Get('me')
+  me(@Req() req) {
+    return {
+      success: true,
+      data: req.user,
+    };
   }
 }
