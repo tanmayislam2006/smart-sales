@@ -1,10 +1,5 @@
 import useAxiosSecure from "@/Hooks/useAxiosSecure";
-import {
-  createContext,
-  useContext,
-  useEffect,
-  useState,
-} from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 
 type User = {
   id: string;
@@ -29,7 +24,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   const fetchUser = async () => {
     try {
-      const res = await axiosSecure.get("/auth/me");
+      const res = await axiosSecure.get("/user/me");
       setUser(res.data);
     } catch {
       setUser(null);
@@ -39,7 +34,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   };
 
   const logout = async () => {
-    await axiosSecure.post("/auth/logout");
+    await axiosSecure.post("/user/logout");
     setUser(null);
   };
 

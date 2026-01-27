@@ -25,7 +25,10 @@ export class UserService {
       },
     });
 
-    return user;
+    return {
+      success: true,
+      message: 'Register  Success',
+    };
   }
 
   async logInUser(email: string, password: string) {

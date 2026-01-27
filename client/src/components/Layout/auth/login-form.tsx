@@ -15,21 +15,54 @@ import {
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import toast from "react-hot-toast";
+import useAxios from "@/Hooks/useAxios";
+import { useForm } from "react-hook-form";
+import { negative, z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Navigate, useNavigation } from "react-router";
+
+const loginSchema = z.object({
+  email: z.string().email("Invalid email address"),
+  password: z.string().min(6, "Password must be at least 6 characters"),
+});
+
+type LoginFormValues = z.infer<typeof loginSchema>;
 
 export function LoginForm({
   className,
   ...props
 }: React.ComponentProps<"div">) {
+  const axiosInstance = useAxios();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+  } = useForm<LoginFormValues>({
+    resolver: zodResolver(loginSchema),
+  });
+
+  const onSubmit = async (data: LoginFormValues) => {
+    try {
+      const res = await axiosInstance.post("/user/login", data);
+      toast.success("Login successful");
+      if (res.data.success) {
+        <Navigate to="/" replace />;
+      }
+    } catch (err) {
+      toast.error("Invalid email or password");
+    }
+  };
+
   return (
     <div
       className={cn(
         "flex min-h-screen items-center justify-center bg-muted px-4",
-        className
+        className,
       )}
       {...props}
     >
-      <Card className="w-full max-w-md shadow-lg rounded-2xl">
-        <CardHeader className="text-center space-y-1">
+      <Card className="w-full max-w-md rounded-2xl shadow-lg">
+        <CardHeader className="space-y-1 text-center">
           <CardTitle className="text-2xl font-semibold">
             Login to your account
           </CardTitle>
@@ -39,7 +72,7 @@ export function LoginForm({
         </CardHeader>
 
         <CardContent>
-          <form className="space-y-6">
+          <form className="space-y-6" onSubmit={handleSubmit(onSubmit)}>
             <FieldGroup>
               <Field>
                 <FieldLabel htmlFor="email">Email</FieldLabel>
@@ -47,57 +80,40 @@ export function LoginForm({
                   id="email"
                   type="email"
                   placeholder="m@example.com"
-                  required
+                  {...register("email")}
                 />
+                {errors.email && (
+                  <FieldDescription className="text-destructive">
+                    {errors.email.message}
+                  </FieldDescription>
+                )}
               </Field>
 
               <Field>
                 <div className="flex items-center justify-between">
                   <FieldLabel htmlFor="password">Password</FieldLabel>
-                  <button
-                    type="button"
-                    className="text-sm text-muted-foreground hover:underline"
-                  >
-                    Forgot password?
-                  </button>
                 </div>
-                <Input id="password" type="password" required />
+                <Input
+                  id="password"
+                  type="password"
+                  defaultValue={"123456"}
+                  {...register("password")}
+                />
+                {errors.password && (
+                  <FieldDescription className="text-destructive">
+                    {errors.password.message}
+                  </FieldDescription>
+                )}
               </Field>
             </FieldGroup>
 
-            {/* Login Button */}
-            <Button className="w-full" type="submit">
-              Login
-            </Button>
-
-            {/* Divider */}
-            <div className="relative">
-              <div className="absolute inset-0 flex items-center">
-                <span className="w-full border-t" />
-              </div>
-              <div className="relative flex justify-center text-xs uppercase">
-                <span className="bg-background px-2 text-muted-foreground">
-                  Or continue with
-                </span>
-              </div>
-            </div>
-
-            {/* Google Login */}
             <Button
-              onClick={() => toast.success("Google login clicked")}
-              variant="outline"
-              type="button"
-              className="w-full"
+              className="w-full mb-10"
+              type="submit"
+              disabled={isSubmitting}
             >
-              Login with Google
+              {isSubmitting ? "Logging in..." : "Login"}
             </Button>
-
-            <FieldDescription className="text-center text-sm">
-              Don&apos;t have an account?{" "}
-              <a href="#" className="font-medium hover:underline">
-                Sign up
-              </a>
-            </FieldDescription>
           </form>
         </CardContent>
       </Card>
