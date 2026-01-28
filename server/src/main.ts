@@ -8,8 +8,8 @@ async function bootstrap() {
   app.use(cookieParser());
 
   app.enableCors({
-    // origin: 'https://strong-mermaid-06ce4b.netlify.app',
-    origin: 'http://localhost:5173',
+    origin: 'https://strong-mermaid-06ce4b.netlify.app',
+    // origin: 'http://localhost:5173',
     credentials: true,
   });
 
