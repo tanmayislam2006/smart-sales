@@ -2,10 +2,11 @@ import { createBrowserRouter } from "react-router";
 
 import PrivateRoute from "./PrivateRoute";
 import Dashboard from "@/components/Layout/dashboard/Dashboard";
-import Product from "@/page/Product";
+
 import Sales from "@/page/Sales";
 import MySales from "@/page/MySales";
 import { LoginForm } from "@/components/Layout/auth/login-form";
+import Product from "@/page/Product";
 
 const router = createBrowserRouter([
   {

@@ -4,9 +4,24 @@ import {
   getCoreRowModel,
   getFilteredRowModel,
   flexRender,
+  type ColumnDef,
 } from "@tanstack/react-table";
 
-const DataTable = ({ columns, data }) => {
+
+type SearchableRow = {
+  name: string;
+  sku: string;
+};
+
+type DataTableProps<TData extends SearchableRow> = {
+  columns: ColumnDef<TData, any>[];
+  data: TData[];
+};
+
+function DataTable<TData extends SearchableRow>({
+  columns,
+  data,
+}: DataTableProps<TData>) {
   const [globalFilter, setGlobalFilter] = useState("");
 
   const table = useReactTable({
@@ -17,11 +32,12 @@ const DataTable = ({ columns, data }) => {
     },
     onGlobalFilterChange: setGlobalFilter,
     globalFilterFn: (row, _columnId, filterValue) => {
-      const name = row.original.name?.toLowerCase() || "";
-      const sku = row.original.sku?.toLowerCase() || "";
       const search = filterValue.toLowerCase();
 
-      return name.includes(search) || sku.includes(search);
+      return (
+        row.original.name.toLowerCase().includes(search) ||
+        row.original.sku.toLowerCase().includes(search)
+      );
     },
     getCoreRowModel: getCoreRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
@@ -32,12 +48,11 @@ const DataTable = ({ columns, data }) => {
       <input
         type="text"
         placeholder="Search by product name or SKU..."
-        value={globalFilter ?? ""}
+        value={globalFilter}
         onChange={(e) => setGlobalFilter(e.target.value)}
         className="w-full max-w-sm rounded-md border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
       />
 
-  
       <div className="overflow-x-auto w-full border rounded-lg">
         <table className="min-w-full text-left text-sm">
           <thead className="bg-primary text-white">
@@ -87,6 +102,6 @@ const DataTable = ({ columns, data }) => {
       </div>
     </div>
   );
-};
+}
 
 export default DataTable;

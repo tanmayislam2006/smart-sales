@@ -12,17 +12,21 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { salesSchema } from "@/schema/sales.schema";
 import type { SalesFormValues } from "@/schema/sales.schema";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import {
+  useMutation,
+  useQuery,
+  useQueryClient,
+} from "@tanstack/react-query";
 import toast from "react-hot-toast";
 import useAxiosSecure from "@/Hooks/useAxiosSecure";
 import { useMemo } from "react";
 import { ShoppingCart } from "lucide-react";
+import type { Product } from "@/types";
 
 const Sales = () => {
   const axiosSecure = useAxiosSecure();
   const queryClient = useQueryClient();
-
-  const { data: products = [] } = useQuery({
+  const { data: products = [] } = useQuery<Product[]>({
     queryKey: ["products"],
     queryFn: async () => {
       const res = await axiosSecure.get("/product");
@@ -44,21 +48,23 @@ const Sales = () => {
   const productID = watch("productID");
   const quantity = watch("quantity") || 0;
 
-  const product = useMemo(
+
+  const product = useMemo<Product | undefined>(
     () => products.find((p) => p.id === productID),
-    [products, productID],
+    [products, productID]
   );
 
   const total = product ? product.price * quantity : 0;
-  const remainingStock = product ? product.stockQuantity - quantity : null;
+  const remainingStock =
+    product && quantity > 0 ? product.stockQuantity - quantity : null;
 
-  const { mutate, isLoading } = useMutation({
+  const { mutate, isPending } = useMutation({
     mutationFn: async (data: SalesFormValues) =>
       axiosSecure.post("/sales", data),
     onSuccess: () => {
       toast.success("Sale completed successfully");
-      queryClient.invalidateQueries(["products"]);
-      queryClient.invalidateQueries(["sales"]);
+      queryClient.invalidateQueries({ queryKey: ["products"] });
+      queryClient.invalidateQueries({ queryKey: ["sales"] });
       reset();
     },
     onError: () => {
@@ -68,10 +74,11 @@ const Sales = () => {
 
   return (
     <div className="max-w-7xl mx-auto mt-10 grid grid-cols-1 lg:grid-cols-2 gap-6">
-      <Card className="">
+      <Card>
         <CardHeader>
           <CardTitle>Create Sale</CardTitle>
         </CardHeader>
+
         <CardContent>
           <form
             onSubmit={handleSubmit((data) => mutate(data))}
@@ -86,6 +93,7 @@ const Sales = () => {
                 <SelectTrigger>
                   <SelectValue placeholder="Select product" />
                 </SelectTrigger>
+
                 <SelectContent>
                   {products.map((p) => (
                     <SelectItem
@@ -98,6 +106,7 @@ const Sales = () => {
                   ))}
                 </SelectContent>
               </Select>
+
               {errors.productID && (
                 <p className="text-sm text-red-500 mt-1">
                   {errors.productID.message}
@@ -126,8 +135,8 @@ const Sales = () => {
               disabled={
                 !product ||
                 quantity <= 0 ||
-                quantity > (product?.stockQuantity || 0) ||
-                isLoading
+                quantity > (product?.stockQuantity ?? 0) ||
+                isPending
               }
             >
               <ShoppingCart size={18} />
@@ -137,12 +146,11 @@ const Sales = () => {
         </CardContent>
       </Card>
 
-      <Card className="md:w-2xl">
+      <Card>
         <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            Sale Preview
-          </CardTitle>
+          <CardTitle>Sale Preview</CardTitle>
         </CardHeader>
+
         <CardContent className="space-y-4">
           {product ? (
             <>

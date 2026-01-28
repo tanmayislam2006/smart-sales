@@ -1,55 +1,69 @@
 import DataTable from "@/components/DataTable";
 import useAxiosSecure from "@/Hooks/useAxiosSecure";
+import type { Sale } from "@/types";
 import { useQuery } from "@tanstack/react-query";
+
+type SaleTableRow = Sale & {
+  name: string;
+  sku: string;
+};
 
 const MySales = () => {
   const axiosSecure = useAxiosSecure();
-  const { data, isLoading } = useQuery({
+
+  const { data = [], isLoading } = useQuery<Sale[]>({
     queryKey: ["my-sales"],
     queryFn: async () => {
       const res = await axiosSecure.get("/sales");
       return res.data.data;
     },
   });
+
   if (isLoading) {
-    return <p className="text-center">Data Is Loading </p>;
+    return <p className="text-center">Data Is Loading</p>;
   }
+
+  const tableData: SaleTableRow[] = data.map((sale) => ({
+    ...sale,
+    name: sale.product.name,
+    sku: sale.product.name,
+  }));
+
   const columns = [
     {
       accessorKey: "id",
       header: "ID",
-      cell: ({ row }) => <span>{row.original.id}</span>,
+      cell: ({ row }: { row: { original: SaleTableRow } }) => (
+        <span>{row.original.id}</span>
+      ),
     },
     {
-      accessorKey: "productID",
-      header: "Product ID",
-      cell: ({ row }) => <span>{row.original.productID}</span>,
-    },
-    {
-      accessorKey: "product",
+      accessorKey: "name",
       header: "Product",
-      cell: ({ row }) => <span>{row.original.product.name}</span>,
     },
     {
-      accessorKey: "userID",
-      header: "User ID",
-      cell: ({ row }) => <span>{row.original.userID}</span>,
+      accessorKey: "sku",
+      header: "SKU",
     },
     {
       accessorKey: "quantity",
       header: "Quantity",
-      cell: ({ row }) => <span>{row.original.quantity}</span>,
+      cell: ({ row }: { row: { original: SaleTableRow } }) => (
+        <span>{row.original.quantity}</span>
+      ),
     },
     {
       accessorKey: "total",
       header: "Total",
-      cell: ({ row }) => <span>{row.original.total}</span>,
+      cell: ({ row }: { row: { original: SaleTableRow } }) => (
+        <span>${row.original.total}</span>
+      ),
     },
   ];
 
   return (
     <div className="container mx-auto mt-10">
-      <DataTable columns={columns} data={data} />
+      <DataTable<SaleTableRow> columns={columns} data={tableData} />
     </div>
   );
 };

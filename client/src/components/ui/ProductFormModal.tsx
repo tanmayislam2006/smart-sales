@@ -64,7 +64,7 @@ const ProductFormModal = ({ open, onClose, defaultValues }: Props) => {
     },
     onSuccess: () => {
       toast.success(isEdit ? "Product updated" : "Product added");
-      queryClient.invalidateQueries(["products"]);
+      queryClient.invalidateQueries({ queryKey: ["products"] });
       reset();
       onClose();
     },
