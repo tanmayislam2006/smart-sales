@@ -8,9 +8,9 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { UserService } from './user.service';
-import { User } from 'generated/prisma/client';
 import { Response } from 'express';
 import { AuthGuard } from 'src/common/auth.guard';
+import { User } from '@prisma/client';
 
 @Controller('user')
 export class UserController {
