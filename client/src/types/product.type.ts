@@ -15,5 +15,6 @@ export type Sale = {
   total: number;
   product: {
     name: string;
+    sku: string;
   };
 };

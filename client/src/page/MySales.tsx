@@ -26,7 +26,7 @@ const MySales = () => {
   const tableData: SaleTableRow[] = data.map((sale) => ({
     ...sale,
     name: sale.product.name,
-    sku: sale.product.name,
+    sku: sale.product.sku
   }));
 
   const columns = [

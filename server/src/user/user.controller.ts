@@ -28,7 +28,7 @@ export class UserController {
     const token = await this.userService.logInUser(body.email, body.password);
     res.cookie('accessToken', token, {
       httpOnly: true,
-      secure: false,
+      secure: true,
       sameSite: 'lax',
       maxAge: 24 * 60 * 60 * 1000,
     });

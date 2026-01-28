@@ -14,6 +14,7 @@ export class SalesService {
         product: {
           select: {
             name: true,
+            sku: true,
           },
         },
       },
